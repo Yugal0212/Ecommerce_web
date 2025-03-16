@@ -22,8 +22,9 @@ exports.getAllCategories = async (req, res) => {
 };
 
 exports.getCategoryById = async (req, res) => {
-  const category = Category.findById(req.params.id)
-  res.json(category);
+  const category = await Category.findById(req.params.id);
+  if (!category) return res.status(404).json({ message: "Category not found" });
+  res.json({ ...category.toObject(), id: category._id }); // Map _id to id
 };
 
 exports.getProductsByCategory = async (req, res) => {
@@ -42,8 +43,17 @@ exports.updateCategory = async (req, res) => {
   res.json(category);
 };
 
+
 exports.deleteCategory = async (req, res) => {
-  const category = await Category.findByIdAndDelete(req.params.id);
-  res.json(category);
- 
+  try {
+    const category = await Category.findByIdAndDelete(req.params.id);
+    if (!category) {
+      return res.status(404).json({ message: "Category not found" });
+    }
+    res.json({ message: "Category deleted successfully", category });
+  } catch (error) {
+    console.error("Error deleting category:", error);
+    res.status(500).json({ message: "Internal server error" });
+  }
 };
+ 

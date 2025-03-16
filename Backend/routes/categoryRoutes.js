@@ -18,9 +18,10 @@ router.get("/", getAllCategories);
 router.get("/:id", getCategoryById);
 router.get("/:id/products", getProductsByCategory);
 
-router.post("/", authMiddleware, roleMiddleware("seller", "admin"), upload.single("image"), createCategory);
-router.put("/:id", authMiddleware, roleMiddleware("seller", "admin"), upload.single("image"), updateCategory);
+router.post("/", authMiddleware, roleMiddleware( "admin"), upload.single("image"), createCategory);
+router.put("/:id", authMiddleware, roleMiddleware("admin"), upload.single("image"), updateCategory);
 
 router.delete("/:id", authMiddleware, roleMiddleware("admin"), deleteCategory);
 
 module.exports = router;
+  

@@ -5,8 +5,11 @@ const OrderSchema = new mongoose.Schema({
     items: [
         {
             product: { type: mongoose.Schema.Types.ObjectId, ref: "Product", required: true },
+            name: { type: String, required: true },
+            price: { type: Number, required: true },
+            images: [{ type: String }],
             quantity: { type: Number, required: true },
-            price: { type: Number, required: true }
+            totalPrice: { type: Number, required: true }
         }
     ],
     shippingAddress: { 
@@ -18,7 +21,7 @@ const OrderSchema = new mongoose.Schema({
         state: { type: String, required: true },
         zipCode: { type: String, required: true },
         country: { type: String, required: true },
-      },
+    },
     totalAmount: { type: Number, required: true },
     paymentMethod: { type: String, enum: ["COD", "Card"], required: true },
     paymentStatus: { type: String, default: "Pending" },

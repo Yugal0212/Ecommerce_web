@@ -3,15 +3,23 @@ const Address = require("../models/Address");
 // ✅ Add New Address
 exports.addAddress = async (req, res) => {
   try {
-    const { isDefault, ...addressData } = req.body;
+    const { isDefault, phoneNumber, ...addressData } = req.body; // Extract phoneNumber
     const userId = req.user.id;
 
     if (isDefault) await Address.updateMany({ userId }, { isDefault: false });
 
-    const address = await new Address({ userId, isDefault, ...addressData }).save();
-    res.json({ message: "Address added", address });
+    // Map phoneNumber to phone
+    const address = await new Address({ 
+      userId, 
+      isDefault, 
+      phone: phoneNumber, // Map phoneNumber to phone
+      ...addressData 
+    }).save();
+
+    res.status(201).json({ message: "Address added", address });
   } catch (error) {
-    res.json({ message: "Error" });
+    console.error("Error saving address:", error);
+    res.status(500).json({ message: "Failed to save address" });
   }
 };
 
@@ -37,18 +45,27 @@ exports.getAddressById = async (req, res) => {
 exports.updateAddress = async (req, res) => {
   try {
     const { id } = req.params;
-    const { isDefault, ...updateData } = req.body;
+    const { isDefault, phoneNumber, ...updateData } = req.body;
     const userId = req.user.id;
+
+    console.log("Incoming update data:", req.body); // Debugging
 
     if (isDefault) await Address.updateMany({ userId }, { isDefault: false });
 
-    const address = await Address.findOneAndUpdate({ _id: id, userId }, { isDefault, ...updateData }, { new: true });
+    const address = await Address.findOneAndUpdate(
+      { _id: id, userId },
+      { isDefault, phone: phoneNumber, ...updateData }, // Map phoneNumber to phone
+      { new: true }
+    );
+
+    console.log("Updated address:", address); // Debugging
+
     res.json(address || { message: "Not found" });
   } catch (error) {
-    res.json({ message: "Error" });
+    console.error("Error updating address:", error); // Debugging
+    res.status(500).json({ message: "Error updating address" });
   }
 };
-
 // Delete Address
 exports.deleteAddress = async (req, res) => {
   try {

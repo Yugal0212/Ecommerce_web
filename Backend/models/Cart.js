@@ -6,6 +6,7 @@ const cartSchema = new mongoose.Schema({
     product: { type: mongoose.Schema.Types.ObjectId, ref: 'Product', required: true },
     name: { type: String, required: true },
     price: { type: Number, required: true },
+    images: [{ type: String }],
     quantity: { type: Number, required: true },
     totalPrice: { type: Number, required: true }
   }],
@@ -13,5 +14,7 @@ const cartSchema = new mongoose.Schema({
   createdAt: { type: Date, default: Date.now },
   updatedAt: { type: Date, default: Date.now }
 });
+
+
 
 module.exports = mongoose.model('Cart', cartSchema);

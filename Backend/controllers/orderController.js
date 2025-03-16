@@ -4,30 +4,23 @@ const Cart = require("../models/Cart");
 // Place Order
 exports.placeOrder = async (req, res) => {
     try {
-        const { paymentMethod, shippingAddress } = req.body;
-        const cart = await Cart.findOne({ user: req.user._id });
-
-        if (!cart || cart.items.length === 0) {
-            return res.json({ message: "Cart is empty." });
-        }
-
-        const order = new Order({
-            user: req.user._id,
-            items: cart.items,
-            shippingAddress,
-            totalAmount: cart.total,
-            paymentMethod,
-            orderStatus: "Processing"
-        });
-
-        await order.save();
-        await Cart.findOneAndDelete({ user: req.user._id });
-
-        res.json({ message: "Order placed successfully", order });
+      const { paymentMethod, shippingAddress, items, totalAmount } = req.body;
+  
+      const order = new Order({
+        user: req.user._id,
+        items,
+        shippingAddress,
+        totalAmount,
+        paymentMethod,
+        orderStatus: "Processing"
+      });
+  
+      await order.save();
+      res.json({ message: "Order placed successfully", order });
     } catch (error) {
-        res.json({ error: error.message });
+      res.status(500).json({ error: error.message });
     }
-};
+  };
 
 // Get User Orders
 exports.getMyOrders = async (req, res) => {
@@ -104,3 +97,15 @@ exports.updateOrderStatus = async (req, res) => {
         res.json({ error: error.message });
     }
 };
+
+
+// Get Orders by User ID
+// Get Orders by User ID
+exports.getOrdersByUserId = async (req, res) => {
+    try {
+      const orders = await Order.find({ user: req.params.userId }).sort({ createdAt: -1 });
+      res.json({ orders }); // Ensure the response contains the orders array
+    } catch (error) {
+      res.status(500).json({ error: error.message });
+    }
+  };

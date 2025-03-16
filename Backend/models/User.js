@@ -6,7 +6,7 @@ const UserSchema = new mongoose.Schema(
     email: { type: String, required: true, unique: true },
     password: { type: String, required: true },
     role: { type: String, enum: ["customer", "seller", "admin"], default: "customer" },
-    addresses: [{ type: mongoose.Schema.Types.ObjectId, ref: "Address" }], // Reference addresses
+    addresses: [{ type: mongoose.Schema.Types.ObjectId, ref: "Address" }],
     refreshToken: { type: String, default: null },
     sellerDetails: {
       storeName: { type: String, required: false },
@@ -14,6 +14,12 @@ const UserSchema = new mongoose.Schema(
       contactNumber: { type: String, required: false },
       storeAddress: { type: String, required: false },
     },
+    loginHistory: [
+      {
+        loginTime: { type: Date, default: Date.now },
+        logoutTime: { type: Date, default: null },
+      },
+    ],
   },
   { timestamps: true }
 );
