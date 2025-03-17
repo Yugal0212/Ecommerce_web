@@ -42,6 +42,10 @@ app.get('/', (req, res) => {
   res.send('Welcome to the E-commerce API!');
 });
 
+app.get('/api', (req, res) => {
+  res.json({ message: 'Server is running on Vercel!' });
+});
+
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
